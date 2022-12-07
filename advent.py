@@ -2,8 +2,9 @@
 Solutions to 2022 advent of code
 https://adventofcode.com/
 """
-from string import ascii_lowercase, ascii_uppercase
+from collections import deque
 import re
+from string import ascii_lowercase, ascii_uppercase
 
 from utils import get_day5_data
 
@@ -123,6 +124,17 @@ def day_5(part='a'):
     return ''.join(stack[-1] for stack in stacks)
 
 
+def day_6(part='a'):
+    with open(r'inputs\Day_6.txt') as infile:
+        data = infile.read()[:-1]
+
+    offset = 4 if part.lower() == 'a' else 14
+
+    for i, v in enumerate(data):
+        if len(set(data[i:i+offset])) == offset:
+            return i+offset
+
+
 if __name__ == '__main__':
     print(DELIMITER)
     print(f'Day_1A={day_1()}')
@@ -139,4 +151,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_5A={day_5()}')
     print(f'DAY_5B={day_5(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_6A={day_6()}')
+    print(f'DAY_5B={day_6(part="b")}')
     print(DELIMITER)
