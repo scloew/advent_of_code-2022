@@ -11,7 +11,3 @@ def get_day5_data():
 
     stacks = [[i for i in stack[::-1] if not i == ' '] for stack in stacks]
     return stacks, cmds.split('\n')[:-1]
-
-
-if __name__ == '__main__':
-    get_day5_data()

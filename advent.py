@@ -2,10 +2,10 @@
 Solutions to 2022 advent of code
 https://adventofcode.com/
 """
-from collections import deque
 import re
 from string import ascii_lowercase, ascii_uppercase
 
+from classes import FileSystemObject
 from utils import get_day5_data
 
 
@@ -109,13 +109,11 @@ def day_4b():
 def day_5(part='a'):
     stacks, cmds = get_day5_data()
 
-    def move(cmd):
-        num, src, dest = re.findall(r'\d+', cmd)
+    def move(command):
+        num, src, dest = re.findall(r'\d+', command)
         num, src, dest = int(num), int(src)-1, int(dest)-1
-        if part.lower() == 'a':
-            stacks[dest].extend(stacks[src][-num:][::-1])
-        else:
-            stacks[dest].extend(stacks[src][-num:])
+        reverse = -1 if part.lower() == 'a' else 1
+        stacks[dest].extend(stacks[src][-num:][::reverse])
         del stacks[src][-num:]
 
     for cmd in cmds:
@@ -133,6 +131,17 @@ def day_6(part='a'):
     for i, v in enumerate(data):
         if len(set(data[i:i+offset])) == offset:
             return i+offset
+
+
+def day_7(part='a'):
+    with open(r'inputs\Day_7.txt') as infile:
+        data = infile.read().split('\n')[2:-1]
+
+    fso = FileSystemObject.from_string_list(data)
+    if part.lower() == 'a':
+        return fso.calc_dirs_size_under_lim()
+    else:
+        return fso.smallest_dir_over_limit()
 
 
 if __name__ == '__main__':
@@ -153,5 +162,8 @@ if __name__ == '__main__':
     print(f'DAY_5B={day_5(part="b")}')
     print(DELIMITER)
     print(f'DAY_6A={day_6()}')
-    print(f'DAY_5B={day_6(part="b")}')
+    print(f'DAY_6B={day_6(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_7A={day_7()}')
+    print(f'DAY_7B={day_7(part="b")}')
     print(DELIMITER)
