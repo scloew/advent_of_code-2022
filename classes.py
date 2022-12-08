@@ -15,11 +15,8 @@ class FileSystemObject:
         return max(self._calc_dirs_sizes())
 
     def smallest_dir_over_limit(self, capacity=70_000_000, needed=30_000_000):
-        print(f'total_size={self.calc_total_size()}')
-        print(f'available={capacity-self.calc_total_size()}')
         needed = needed - (capacity-44795677)
         min_ = capacity
-        print(f'needed={needed}')
         for i in self._calc_dirs_sizes():
             if needed < i:
                 min_ = min(min_, i)
