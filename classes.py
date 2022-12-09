@@ -14,7 +14,7 @@ class FileSystemObject:
     def calc_total_size(self):
         return max(self._calc_dirs_sizes())
 
-    def smallest_dir_over_limit(self, capacity=70_000_000, needed=30_000_000):
+    def smallest_dir_to_make_space(self, capacity=70_000_000, needed=30_000_000):
         needed = needed - (capacity-44795677)
         min_ = capacity
         for i in self._calc_dirs_sizes():
@@ -32,9 +32,9 @@ class FileSystemObject:
             sizes.append(dir_size)
             return dir_size
 
-        sizes = []
-        calc_dir_size(self, sizes)
-        return sizes
+        dir_sizes = []
+        calc_dir_size(self, dir_sizes)
+        return dir_sizes
 
     @classmethod
     def from_string_list(cls, data):

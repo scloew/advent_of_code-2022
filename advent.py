@@ -6,10 +6,7 @@ import re
 from string import ascii_lowercase, ascii_uppercase
 
 from classes import FileSystemObject
-from utils import get_day5_data
-
-
-DELIMITER = '\n===============\n'
+from utils import fetch_input, get_day5_data, rotate_grid, check_tree_visibility
 
 
 def day_1(part='a'):
@@ -17,18 +14,16 @@ def day_1(part='a'):
     :param part: for polymorphism; 'A' for part A 'B' for B
     :return:
     """
-    with open(r'inputs/Day_1.txt') as infile:
-        data = infile.read().split('\n\n')
+    data = fetch_input(1, '\n\n')
 
-    cals = [sum(int(i) for i in entry.split('\n')) for entry in data[:-1]]
+    cals = [sum(int(i) for i in entry.split('\n')) for entry in data]
     cals.sort()
-    return sum(cals[-1 if part.lower() == "a" else -3:])
+    return sum(cals[-1 if part.lower() == 'a' else -3:])
 
 
 def day_2a():
-    with open(r'inputs/Day_2.txt') as infile:
-        data = infile.read().split('\n')
-    games = [tuple((i[0], i[-1])) for entry in data[:-1] for i in entry.split('\n')]
+    data = fetch_input(2)
+    games = [tuple((i[0], i[-1])) for entry in data for i in entry.split('\n')]
 
     mps = {'X': 1, 'Y': 2, 'Z': 3}
     outcomes = {('A', 'X'): 3, ('A', 'Y'): 6, ('A', 'Z'): 0,
@@ -39,9 +34,8 @@ def day_2a():
 
 
 def day_2b():
-    with open(r'inputs/Day_2.txt') as infile:
-        data = infile.read().split('\n')
-    games = [tuple((i[0], i[-1])) for entry in data[:-1] for i in entry.split('\n')]
+    data = fetch_input(2)
+    games = [tuple((i[0], i[-1])) for entry in data for i in entry.split('\n')]
 
     mps = {'X': 1, 'Y': 2, 'Z': 3}
     points = {'X': 0, 'Y': 3, 'Z': 6}
@@ -89,11 +83,10 @@ def day_4a():
 
 
 def day_4b():
-    with open('inputs/DAY_4.txt') as infile:
-        data = infile.read().split('\n')
+    data = fetch_input(4)
 
     count_ = 0
-    for entry in data[:-1]:
+    for entry in data:
         e1, e2 = entry.split(',')
         e1, e2 = e1.split('-'), e2.split('-')
         start1, stop1 = int(e1[0]), int(e1[1])
@@ -134,17 +127,32 @@ def day_6(part='a'):
 
 
 def day_7(part='a'):
-    with open(r'inputs\Day_7.txt') as infile:
-        data = infile.read().split('\n')[2:-1]
-
+    data = fetch_input(7)[2:]
     fso = FileSystemObject.from_string_list(data)
     if part.lower() == 'a':
         return fso.calc_dirs_size_under_lim()
     else:
-        return fso.smallest_dir_over_limit()
+        return fso.smallest_dir_to_make_space()
+
+
+def day_8():
+    data = fetch_input(8)
+    visible_trees = [[False for _ in row] for row in data]
+
+    for _ in range(4):
+        check_tree_visibility(data, visible_trees)
+        data = rotate_grid(data)
+        visible_trees = rotate_grid(visible_trees)
+
+    count_ = 0
+    for row in visible_trees:
+        count_ += sum(i for i in row if i)
+    return count_
 
 
 if __name__ == '__main__':
+    DELIMITER = '\n===============\n'
+
     print(DELIMITER)
     print(f'Day_1A={day_1()}')
     print(f'Day_1B={day_1(part="B")}')
@@ -166,4 +174,8 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_7A={day_7()}')
     print(f'DAY_7B={day_7(part="b")}')
+    print(DELIMITER)
+    # @ TODO: 1927 is too high
+    print(f'DAY_8A={day_8()}')
+    # print(f'DAY_8B={day_8(part="b")}')
     print(DELIMITER)
