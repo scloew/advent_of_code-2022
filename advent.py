@@ -5,8 +5,10 @@ https://adventofcode.com/
 import re
 from string import ascii_lowercase, ascii_uppercase
 
-from classes import FileSystemObject
-from utils import fetch_input, get_day5_data, rotate_grid, check_tree_visibility
+from classes import FileSystemObject, ScenicScore
+from utils import (fetch_input, get_day5_data,
+                   rotate_grid, check_tree_visibility,
+                   update_scenic_score)
 
 
 def day_1(part='a'):
@@ -135,8 +137,15 @@ def day_7(part='a'):
         return fso.smallest_dir_to_make_space()
 
 
-def day_8():
+def day_8(part='a'):
     data = fetch_input(8)
+    if part.lower() == 'a':
+        return day_8a(data)
+    else:
+        return day_8b(data)
+
+
+def day_8a(data):
     visible_trees = [[False for _ in row] for row in data]
 
     for _ in range(4):
@@ -144,10 +153,18 @@ def day_8():
         data = rotate_grid(data)
         visible_trees = rotate_grid(visible_trees)
 
-    count_ = 0
-    for row in visible_trees:
-        count_ += sum(i for i in row if i)
-    return count_
+    return sum(sum(i for i in row if i) for row in visible_trees)
+
+
+def day_8b(data):
+    trees_visibility = [[ScenicScore() for _ in _] for _ in data]
+
+    for direction in ['right', 'up', 'left', 'down']:
+        update_scenic_score(data, trees_visibility, direction)
+        data = rotate_grid(data)
+        trees_visibility = rotate_grid(trees_visibility)
+
+    return max(max(ss.calc_score() for ss in row) for row in trees_visibility)
 
 
 if __name__ == '__main__':
@@ -175,7 +192,6 @@ if __name__ == '__main__':
     print(f'DAY_7A={day_7()}')
     print(f'DAY_7B={day_7(part="b")}')
     print(DELIMITER)
-    # @ TODO: 1927 is too high
     print(f'DAY_8A={day_8()}')
-    # print(f'DAY_8B={day_8(part="b")}')
+    print(f'DAY_8B={day_8(part="b")}')
     print(DELIMITER)

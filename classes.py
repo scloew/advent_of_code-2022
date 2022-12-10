@@ -1,3 +1,7 @@
+from collections import defaultdict
+from numpy import prod
+
+
 class FileSystemObject:
 
     def __init__(self, parent, name):
@@ -55,3 +59,15 @@ class FileSystemObject:
                 cd.files_size += int(line.split(' ')[0])
 
         return tld
+
+
+class ScenicScore:
+
+    def __init__(self):
+        self.sizes = {i: 0 for i in ['right', 'up', 'left', 'down']}
+
+    def increment(self, direction):
+        self.sizes[direction] += 1
+
+    def calc_score(self):
+        return prod([val for _, val in self.sizes.items()])
