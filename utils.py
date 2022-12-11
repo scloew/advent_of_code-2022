@@ -24,12 +24,20 @@ def rotate_grid(grid):
 
 def check_tree_visibility(grid, visible_trees):
     for i, row in enumerate(grid):
-        visible_trees[i][0], max_hgt = True, row[0]
+        max_hgt = chr(ord('0')-1)
         for j, hgt in enumerate(row):
             if max_hgt < hgt:
                 visible_trees[i][j] = True
                 max_hgt = hgt
 
 
-def update_scenic_score(grid, trees_visiblity, directions):
-    return NotImplemented
+def update_scenic_score(grid, trees_visibility, direction):
+    for i, row in enumerate(grid):
+        stack = [(row[0], 0)]
+        for j, val in enumerate(row[1:]):
+            inc_val = 1
+            while stack and stack[-1][0] < val:
+                inc_val += stack[-1][1]
+                stack.pop()
+            trees_visibility[i][j+1].increment(direction, inc_val)
+            stack.append((val, inc_val))

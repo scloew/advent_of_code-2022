@@ -159,12 +159,12 @@ def day_8a(data):
 def day_8b(data):
     trees_visibility = [[ScenicScore() for _ in _] for _ in data]
 
-    for direction in ['right', 'up', 'left', 'down']:
+    for direction in ['left', 'down', 'right', 'up']:
         update_scenic_score(data, trees_visibility, direction)
         data = rotate_grid(data)
         trees_visibility = rotate_grid(trees_visibility)
 
-    return max(max(ss.calc_score() for ss in row) for row in trees_visibility)
+    return max(max(score.calc_score() for score in row) for row in trees_visibility)
 
 
 if __name__ == '__main__':

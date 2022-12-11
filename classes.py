@@ -64,10 +64,10 @@ class FileSystemObject:
 class ScenicScore:
 
     def __init__(self):
-        self.sizes = {i: 0 for i in ['right', 'up', 'left', 'down']}
+        self.tree_visibility = defaultdict(int)
 
-    def increment(self, direction):
-        self.sizes[direction] += 1
+    def increment(self, direction, val=1):
+        self.tree_visibility[direction] += val
 
     def calc_score(self):
-        return prod([val for _, val in self.sizes.items()])
+        return prod([val for val in self.tree_visibility.values()])
