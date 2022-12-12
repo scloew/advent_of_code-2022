@@ -19,7 +19,7 @@ class FileSystemObject:
         return max(self._calc_dirs_sizes())
 
     def smallest_dir_to_make_space(self, capacity=70_000_000, needed=30_000_000):
-        needed = needed - (capacity-44795677)
+        needed = needed - (capacity - self.calc_total_size())
         min_ = capacity
         for i in self._calc_dirs_sizes():
             if needed < i:

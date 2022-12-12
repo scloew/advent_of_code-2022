@@ -41,3 +41,42 @@ def update_scenic_score(grid, trees_visibility, direction):
                 stack.pop()
             trees_visibility[i][j+1].increment(direction, inc_val)
             stack.append((val, inc_val))
+
+
+def is_adjacent(head, tail):
+    incs = tuple((i, j) for j in range(-1, 2) for i in range(-1, 2))
+    y, x = head
+    yt, xt = tail
+    for yi, xi in incs:
+        if (yt + yi, xt+xi) == (y, x):
+            return True
+    return False
+
+
+def move_tail(head, tail, visited):
+    if not head[0] == tail[0] and not head[1] == tail[1]:
+        _move_diagonal(head, tail)
+    else:
+        _move_linear(head, tail)
+    visited.add(tuple(tail))
+
+
+def _move_diagonal(head, tail):
+    incs = ((i, j) for j in range(-1, 2) for i in range(-1, 2) if abs(i) == abs(j))
+    _move(head, tail, incs)
+
+
+def _move_linear(head, tail):
+    incs = ((i, j) for j in range(-1, 2) for i in range(-1, 2) if not abs(i) == abs(j))
+    _move(head, tail, incs)
+
+
+def _move(head, tail, incs):
+    for yi, xi in incs:
+        tail[0] += yi
+        tail[1] += xi
+        if is_adjacent(head, tail):
+            return
+        tail[0] -= yi
+        tail[1] -= xi
+    raise Exception(f'moving does not make head={head} tail={tail} adjacent incs={incs}')

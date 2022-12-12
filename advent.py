@@ -8,7 +8,7 @@ from string import ascii_lowercase, ascii_uppercase
 from classes import FileSystemObject, ScenicScore
 from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
-                   update_scenic_score)
+                   update_scenic_score, is_adjacent, move_tail)
 
 
 def day_1(part='a'):
@@ -139,10 +139,7 @@ def day_7(part='a'):
 
 def day_8(part='a'):
     data = fetch_input(8)
-    if part.lower() == 'a':
-        return day_8a(data)
-    else:
-        return day_8b(data)
+    return day_8a(data) if part.lower() == 'a' else day_8b(data)
 
 
 def day_8a(data):
@@ -165,6 +162,27 @@ def day_8b(data):
         trees_visibility = rotate_grid(trees_visibility)
 
     return max(max(score.calc_score() for score in row) for row in trees_visibility)
+
+
+def day_9(part='a'):
+    data = fetch_input(9)
+    return day_9a(data) if part.lower() == 'a' else day_8b(data)
+
+
+def day_9a(data):
+    data = [tuple(i for i in row.split(' ')) for row in data]
+    visited = {(0, 0)}
+    head, tail = [0, 0], [0, 0]
+    for cmd, mag in data:
+        if cmd in {'U', 'D'}:
+            sign, index = 1 if cmd == 'U' else -1, 0
+        else:
+            sign, index = 1 if cmd == 'R' else -1, 1
+        for _ in range(int(mag)):
+            head[index] += sign * 1
+            if not is_adjacent(head, tail):
+                move_tail(head, tail, visited)
+    return len(visited)
 
 
 if __name__ == '__main__':
@@ -194,4 +212,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_8A={day_8()}')
     print(f'DAY_8B={day_8(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_9A={day_9()}')
+    # print(f'DAY_9B={day_9(part="b")}')
     print(DELIMITER)
