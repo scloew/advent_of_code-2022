@@ -43,6 +43,14 @@ def update_scenic_score(grid, trees_visibility, direction):
             stack.append((val, inc_val))
 
 
+def get_day_9_sign_and_index(cmd):
+    if cmd in {'U', 'D'}:
+        sign, index = 1 if cmd == 'U' else -1, 0
+    else:
+        sign, index = 1 if cmd == 'R' else -1, 1
+    return sign, index
+
+
 def is_adjacent(head, tail):
     incs = tuple((i, j) for j in range(-1, 2) for i in range(-1, 2))
     y, x = head
@@ -53,12 +61,11 @@ def is_adjacent(head, tail):
     return False
 
 
-def move_tail(head, tail, visited):
+def move_tail(head, tail):
     if not head[0] == tail[0] and not head[1] == tail[1]:
         _move_diagonal(head, tail)
     else:
         _move_linear(head, tail)
-    visited.add(tuple(tail))
 
 
 def _move_diagonal(head, tail):
@@ -79,4 +86,13 @@ def _move(head, tail, incs):
             return
         tail[0] -= yi
         tail[1] -= xi
-    raise Exception(f'moving does not make head={head} tail={tail} adjacent incs={incs}')
+
+
+def move_rope(rope, visited):
+    if is_adjacent(rope[0], rope[1]):
+        return
+
+    for i, point in enumerate(rope[1:]):
+        if not is_adjacent(rope[i], point):
+            move_tail(rope[i], point)
+    visited.add(tuple(rope[-1]))

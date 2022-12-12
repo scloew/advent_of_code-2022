@@ -8,7 +8,9 @@ from string import ascii_lowercase, ascii_uppercase
 from classes import FileSystemObject, ScenicScore
 from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
-                   update_scenic_score, is_adjacent, move_tail)
+                   update_scenic_score, is_adjacent,
+                   move_tail, get_day_9_sign_and_index,
+                   move_rope)
 
 
 def day_1(part='a'):
@@ -23,8 +25,12 @@ def day_1(part='a'):
     return sum(cals[-1 if part.lower() == 'a' else -3:])
 
 
-def day_2a():
+def day_2(part='a'):
     data = fetch_input(2)
+    return day_2a(data) if part.lower() == 'a' else day_2b(data)
+
+
+def day_2a(data):
     games = [tuple((i[0], i[-1])) for entry in data for i in entry.split('\n')]
 
     mps = {'X': 1, 'Y': 2, 'Z': 3}
@@ -35,8 +41,7 @@ def day_2a():
     return sum(mps[m2]+outcomes[(m1, m2)] for m1, m2 in games)
 
 
-def day_2b():
-    data = fetch_input(2)
+def day_2b(data):
     games = [tuple((i[0], i[-1])) for entry in data for i in entry.split('\n')]
 
     mps = {'X': 1, 'Y': 2, 'Z': 3}
@@ -46,6 +51,10 @@ def day_2b():
                 ('C', 'X'): 'Y', ('C', 'Y'): 'Z', ('C', 'Z'): 'X'}
 
     return sum(points[j]+mps[outcomes[(i, j)]] for i, j in games)
+
+
+def day_3(part='a'):
+    return day_3a() if part.lower() == 'a' else day_3b()
 
 
 def day_3a():
@@ -69,12 +78,14 @@ def day_3b():
     return sum_
 
 
-def day_4a():
-    with open('inputs/DAY_4.txt') as infile:
-        data = infile.read().split('\n')
+def day_4(part='a'):
+    data = fetch_input(4)
+    return day_4a(data) if part.lower() == 'a' else day_4b(data)
 
+
+def day_4a(data):
     count_ = 0
-    for entry in data[:-1]:
+    for entry in data:
         e1, e2 = entry.split(',')
         e1, e2 = e1.split('-'), e2.split('-')
         start1, stop1 = int(e1[0]), int(e1[1])
@@ -84,9 +95,7 @@ def day_4a():
     return count_
 
 
-def day_4b():
-    data = fetch_input(4)
-
+def day_4b(data):
     count_ = 0
     for entry in data:
         e1, e2 = entry.split(',')
@@ -113,7 +122,6 @@ def day_5(part='a'):
 
     for cmd in cmds:
         move(cmd)
-
     return ''.join(stack[-1] for stack in stacks)
 
 
@@ -131,10 +139,7 @@ def day_6(part='a'):
 def day_7(part='a'):
     data = fetch_input(7)[2:]
     fso = FileSystemObject.from_string_list(data)
-    if part.lower() == 'a':
-        return fso.calc_dirs_size_under_lim()
-    else:
-        return fso.smallest_dir_to_make_space()
+    return fso.calc_dirs_size_under_lim() if part.lower() == 'a' else fso.smallest_dir_to_make_space()
 
 
 def day_8(part='a'):
@@ -165,23 +170,14 @@ def day_8b(data):
 
 
 def day_9(part='a'):
-    data = fetch_input(9)
-    return day_9a(data) if part.lower() == 'a' else day_8b(data)
-
-
-def day_9a(data):
-    data = [tuple(i for i in row.split(' ')) for row in data]
-    visited = {(0, 0)}
-    head, tail = [0, 0], [0, 0]
+    data = [tuple(i for i in row.split(' ')) for row in fetch_input(9)]
+    size = 2 if part.lower() == 'a' else 10
+    visited, rope = {(0, 0)}, [[0, 0] for _ in range(size)]
     for cmd, mag in data:
-        if cmd in {'U', 'D'}:
-            sign, index = 1 if cmd == 'U' else -1, 0
-        else:
-            sign, index = 1 if cmd == 'R' else -1, 1
+        sign, index = get_day_9_sign_and_index(cmd)
         for _ in range(int(mag)):
-            head[index] += sign * 1
-            if not is_adjacent(head, tail):
-                move_tail(head, tail, visited)
+            rope[0][index] += sign
+            move_rope(rope, visited)
     return len(visited)
 
 
@@ -190,16 +186,16 @@ if __name__ == '__main__':
 
     print(DELIMITER)
     print(f'Day_1A={day_1()}')
-    print(f'Day_1B={day_1(part="B")}')
+    print(f'Day_1B={day_1(part="b")}')
     print(DELIMITER)
-    print(f'DAY_2A={day_2a()}')
-    print(f'DAY_2B={day_2b()}')
+    print(f'DAY_2A={day_2()}')
+    print(f'DAY_2B={day_2(part="b")}')
     print(DELIMITER)
-    print(f'DAY_3A={day_3a()}')
-    print(f'DAY_3A={day_3b()}')
+    print(f'DAY_3A={day_3()}')
+    print(f'DAY_3A={day_3(part="b")}')
     print(DELIMITER)
-    print(f'DAY_4A={day_4a()}')
-    print(f'DAY_4B={day_4b()}')
+    print(f'DAY_4A={day_4()}')
+    print(f'DAY_4B={day_4(part="b")}')
     print(DELIMITER)
     print(f'DAY_5A={day_5()}')
     print(f'DAY_5B={day_5(part="b")}')
@@ -214,5 +210,5 @@ if __name__ == '__main__':
     print(f'DAY_8B={day_8(part="b")}')
     print(DELIMITER)
     print(f'DAY_9A={day_9()}')
-    # print(f'DAY_9B={day_9(part="b")}')
+    print(f'DAY_9B={day_9(part="b")}')
     print(DELIMITER)
