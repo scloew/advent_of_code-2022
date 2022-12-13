@@ -183,7 +183,7 @@ def day_9(part='a'):
 
 def day_10(part='a'):
     data = fetch_input(10)
-    return day_10a(data) if part.lower() == 'a' else NotImplemented
+    return day_10a(data) if part.lower() == 'a' else day_10b(data)
 
 
 def day_10a(data):
@@ -199,8 +199,31 @@ def day_10a(data):
             if cycle == check_cycle:
                 signal_strength += x * cycle
                 check_cycle += cycle_increment
-            x += int(line.split(' ')[-1])
+            x += int(line.split()[-1])
     return signal_strength
+
+
+def day_10b(data):
+    cycle, x = 0, 1
+
+    screen = []
+    for line in data:
+        pixel = '#' if x-1 <= cycle <= x+1 else '.'
+        screen.append(pixel)
+        if len(screen) == 40:
+            print(''.join(screen))
+            screen = []
+        cycle += 1
+        cycle %= 40
+        if not line == 'noop':
+            pixel = '#' if x - 1 <= cycle <= x + 1 else '.'
+            screen.append(pixel)
+            if len(screen) == 40:
+                print(''.join(screen))
+                screen = []
+            cycle += 1
+            x += int(line.split(' ')[-1])
+        cycle %= 40
 
 
 if __name__ == '__main__':
@@ -235,5 +258,5 @@ if __name__ == '__main__':
     print(f'DAY_9B={day_9(part="b")}')
     print(DELIMITER)
     print(f'DAY_10A={day_10()}')
-    # print(f'DAY_10B={day_10(part="b")}')
+    print(f'DAY_10B={day_10(part="b")}')
     print(DELIMITER)
