@@ -62,10 +62,7 @@ def is_adjacent(head, tail):
 
 
 def move_tail(head, tail):
-    if not head[0] == tail[0] and not head[1] == tail[1]:
-        _move_diagonal(head, tail)
-    else:
-        _move_linear(head, tail)
+    _move_diagonal(head, tail) if not (head[0] == tail[0] or head[1] == tail[1]) else _move_linear(head, tail)
 
 
 def _move_diagonal(head, tail):
@@ -91,7 +88,6 @@ def _move(head, tail, incs):
 def move_rope(rope, visited):
     if is_adjacent(rope[0], rope[1]):
         return
-
     for i, point in enumerate(rope[1:]):
         if not is_adjacent(rope[i], point):
             move_tail(rope[i], point)

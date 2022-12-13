@@ -181,6 +181,28 @@ def day_9(part='a'):
     return len(visited)
 
 
+def day_10(part='a'):
+    data = fetch_input(10)
+    return day_10a(data) if part.lower() == 'a' else NotImplemented
+
+
+def day_10a(data):
+    signal_strength, x = 0, 1
+    check_cycle, cycle_increment, cycle = 20, 40, 0
+    for line in data:
+        cycle += 1
+        if cycle == check_cycle:
+            signal_strength += x * cycle
+            check_cycle += cycle_increment
+        if not line == 'noop':
+            cycle += 1
+            if cycle == check_cycle:
+                signal_strength += x * cycle
+                check_cycle += cycle_increment
+            x += int(line.split(' ')[-1])
+    return signal_strength
+
+
 if __name__ == '__main__':
     DELIMITER = '\n===============\n'
 
@@ -211,4 +233,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_9A={day_9()}')
     print(f'DAY_9B={day_9(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_10A={day_10()}')
+    # print(f'DAY_10B={day_10(part="b")}')
     print(DELIMITER)
