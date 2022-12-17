@@ -1,4 +1,8 @@
 from collections import defaultdict
+import re
+from operator import add, sub, mul
+
+
 from numpy import prod
 
 
@@ -71,3 +75,31 @@ class ScenicScore:
 
     def calc_score(self):
         return prod([val for val in self.tree_visibility.values()])
+
+
+class Monkey:
+
+    def __init__(self, items, op, divisor, true_monkey, false_monkey):
+        self.items, self.op, self.div = items, op, divisor
+        self.true_monkey, self.false_monkey = true_monkey, false_monkey
+        self.handled_cnt = 0
+
+    # TODO: double check this function and add logic for monkeys taking a round
+    def handle_items(self):
+        self.handled_cnt += len(self.items)
+        for worry in self.items:
+            new_worry = self.op(worry) // 3
+            yield self.true_monkey if not new_worry % self.div else self.false_monkey, new_worry
+        self.items = []
+
+    @classmethod
+    def from_string(cls, string_):
+        data = string_.rstrip().split('\n')[1:]
+        ops = {'+': add, '-': sub, '*': mul}
+        items = [int(i) for i in re.findall(r'\d+', data[0])]
+        op, val = data[1].split(' ')[-2:]
+        lam = lambda x: ops[op](x, x) if val == 'old' else ops[op](x, int(val))
+        div = int(re.findall(r'\d+', data[2])[0])
+        true_m, false_m = int(data[-2].split(' ')[-1]), int(data[-1].split(' ')[-1])
+        return cls(items, lam, div, true_m, false_m)
+
