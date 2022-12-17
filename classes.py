@@ -79,16 +79,16 @@ class ScenicScore:
 
 class Monkey:
 
-    def __init__(self, items, op, divisor, true_monkey, false_monkey):
+    def __init__(self, items, op, divisor, true_monkey, false_monkey, adjust_interest=lambda x: x//3):
         self.items, self.op, self.div = items, op, divisor
         self.true_monkey, self.false_monkey = true_monkey, false_monkey
+        self.adjust_interest = adjust_interest
         self.handled_cnt = 0
 
-    # TODO: double check this function and add logic for monkeys taking a round
     def handle_items(self):
         self.handled_cnt += len(self.items)
         for worry in self.items:
-            new_worry = self.op(worry) // 3
+            new_worry = self.adjust_interest(self.op(worry))
             yield self.true_monkey if not new_worry % self.div else self.false_monkey, new_worry
         self.items = []
 

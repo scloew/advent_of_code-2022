@@ -2,15 +2,15 @@
 Solutions to 2022 advent of code
 https://adventofcode.com/
 """
+from math import lcm
 import re
 from string import ascii_lowercase, ascii_uppercase
 
 from classes import FileSystemObject, ScenicScore, Monkey
 from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
-                   update_scenic_score, is_adjacent,
-                   move_tail, get_day_9_sign_and_index,
-                   move_rope)
+                   update_scenic_score, get_day_9_sign_and_index,
+                   move_rope, process_monkeys)
 
 
 def day_1(part='a'):
@@ -224,16 +224,18 @@ def day_10b(data):
         cycle %= 40
 
 
-def day_11(num_rounds=20):
+def day_11(part='a'):
     with open(r'inputs\Day_11.txt') as infile:
         data = infile.read().split('\n\n')
-    monkeys = [Monkey.from_strinsg(row) for row in data]
-    for i in range(num_rounds):
-        for j, m in enumerate(monkeys):
-            for new_m, worry in m.handle_items():
-                monkeys[new_m].items.append(worry)
-    monkeys.sort(key=lambda x: x.handled_cnt)
-    return monkeys[-1].handled_cnt * monkeys[-2].handled_cnt
+    monkeys = [Monkey.from_string(row) for row in data]
+    if part.lower() == 'a':
+        rounds = 20
+    else:
+        rounds = 10_000
+        lcm_ = lcm(*(m.div for m in monkeys))
+        for m in monkeys:
+            m.adjust_interest = lambda x: x % lcm_
+    return process_monkeys(monkeys, num_rounds=rounds)
 
 
 if __name__ == '__main__':
@@ -271,6 +273,7 @@ if __name__ == '__main__':
     print('DAY_10B=')
     day_10(part="b")
     print(DELIMITER)
-    print(DELIMITER)
     print(f'DAY_11A={day_11()}')
-    # print(f'DAY_11B={day_11()}')
+    # @TODO: 595555135 is too low
+    print(f'DAY_11B={day_11(part="b")}')
+    print(DELIMITER)

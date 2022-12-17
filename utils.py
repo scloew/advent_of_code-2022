@@ -92,3 +92,12 @@ def move_rope(rope, visited):
         if not is_adjacent(rope[i], point):
             move_tail(rope[i], point)
     visited.add(tuple(rope[-1]))
+
+
+def process_monkeys(monkeys, num_rounds=20):
+    for i in range(num_rounds):
+        for j, m in enumerate(monkeys):
+            for new_m, worry in m.handle_items():
+                monkeys[new_m].items.append(worry)
+    monkeys.sort(key=lambda x: x.handled_cnt)
+    return monkeys[-1].handled_cnt * monkeys[-2].handled_cnt
