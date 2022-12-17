@@ -101,3 +101,31 @@ def process_monkeys(monkeys, num_rounds=20):
                 monkeys[new_m].items.append(worry)
     monkeys.sort(key=lambda x: x.handled_cnt)
     return monkeys[-1].handled_cnt * monkeys[-2].handled_cnt
+
+
+def bfs(grid, target, to_search=None, hgt_limit=1):
+    if to_search is None:
+        to_search = [(0, 0)]
+    incs = tuple(tuple([i, j]) for i in range(-1, 2) for j in range(-1, 2) if not abs(i) == abs(j))
+    seen = set(to_search)
+
+    count = -1
+    while to_search:
+        count += 1
+        next_search = []
+        for y, x in to_search:
+            if grid[y][x] == target:
+                return y, x, count
+            for yi, xi in incs:
+                yp, xp = y+yi, x+xi
+                continue_ = 0 <= yp < len(grid) and 0 <= xp < len(grid[0])
+                if not continue_:
+                    continue
+                hgt0, hgt1 = 'a' if grid[y][x] == 'S' else grid[y][x], 'z' if grid[yp][xp] == 'E' else grid[yp][xp]
+                continue_ &= ord(hgt1)-ord(hgt0) <= hgt_limit
+                if continue_ and (yp, xp) not in seen:
+                    seen.add((yp, xp))
+                    next_search.append((yp, xp))
+        to_search = next_search
+
+    return None, None, None

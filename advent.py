@@ -10,7 +10,7 @@ from classes import FileSystemObject, ScenicScore, Monkey
 from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
                    update_scenic_score, get_day_9_sign_and_index,
-                   move_rope, process_monkeys)
+                   move_rope, process_monkeys, bfs)
 
 
 def day_1(part='a'):
@@ -238,6 +238,19 @@ def day_11(part='a'):
     return process_monkeys(monkeys, num_rounds=rounds)
 
 
+def day_12(part='a'):
+    data = fetch_input(12)
+    y, x, _ = bfs(data, 'S', hgt_limit=1000)
+    to_search = [(y, x)]
+    if not part.lower() == 'a':
+        for yi, row in enumerate(data):
+            for xi, v in enumerate(row):
+                if v == 'a':
+                    to_search.append((yi, xi))
+    y1, x1, count = bfs(data, 'E', to_search=to_search)
+    return count
+
+
 if __name__ == '__main__':
     DELIMITER = '\n===============\n'
 
@@ -274,6 +287,8 @@ if __name__ == '__main__':
     day_10(part="b")
     print(DELIMITER)
     print(f'DAY_11A={day_11()}')
-    # @TODO: 595555135 is too low
     print(f'DAY_11B={day_11(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_12A={day_12()}')
+    print(f'DAY_12B={day_12(part="b")}')
     print(DELIMITER)
