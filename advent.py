@@ -2,6 +2,7 @@
 Solutions to 2022 advent of code
 https://adventofcode.com/
 """
+import functools
 from math import lcm
 import re
 from string import ascii_lowercase, ascii_uppercase
@@ -11,7 +12,8 @@ from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
                    update_scenic_score, get_day_9_sign_and_index,
                    move_rope, process_monkeys, bfs,
-                   parse_day_13_input, is_valid_packet)
+                   parse_day_13_input, is_valid_packet,
+                   is_valid_packet2)
 
 
 def day_1(part='a'):
@@ -252,12 +254,30 @@ def day_12(part='a'):
     return count
 
 
-def day_13():
-    data, count = parse_day_13_input(), 0
+def day_13(part='a'):
+    data = parse_day_13_input()
+    return day_13a(data) if part.lower() == 'a' else day_13b(data)
+
+
+def day_13a(data):
+    count = 0
     for i, (x, y) in enumerate(data):
         if is_valid_packet(x, y):
             count += (i + 1)
     return count
+
+
+def day_13b(data):
+    divider1, divider2 = [[2]], [[6]]
+    new_data = []
+    for i in data:
+        x, y = i
+        new_data.append(x)
+        new_data.append(y)
+    new_data.append(divider1)
+    new_data.append(divider2)
+    newer_data = sorted(new_data, key=functools.cmp_to_key(lambda x, y: -1 if is_valid_packet(x, y) else 1))
+    return (newer_data.index(divider1) + 1) * (newer_data.index(divider2) + 1)
 
 
 if __name__ == '__main__':
@@ -302,5 +322,5 @@ if __name__ == '__main__':
     print(f'DAY_12B={day_12(part="b")}')
     print(DELIMITER)
     print(f'DAY_13A={day_13()}')
-    # print(f'DAY_13B={day_13(part="b")}')
+    print(f'DAY_13B={day_13(part="b")}')
     print(DELIMITER)

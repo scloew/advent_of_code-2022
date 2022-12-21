@@ -132,7 +132,6 @@ def parse_day_13_input():
         data = infile.read().split('\n\n')
     for pair in data:
         p0, p1, *_ = pair.split('\n')
-        # print(f'\tp0={p0} p1={p1}')
         yield _parse_line(p0), _parse_line(p1)
 
 
