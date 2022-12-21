@@ -104,12 +104,10 @@ def process_monkeys(monkeys, num_rounds=20):
 
 
 def bfs(grid, target, to_search=None, hgt_limit=1):
-    if to_search is None:
-        to_search = [(0, 0)]
+    to_search = [(0, 0)] if to_search is None else to_search
     incs = tuple(tuple([i, j]) for i in range(-1, 2) for j in range(-1, 2) if not abs(i) == abs(j))
-    seen = set(to_search)
+    seen, count = set(to_search), -1
 
-    count = -1
     while to_search:
         count += 1
         next_search = []
@@ -122,10 +120,55 @@ def bfs(grid, target, to_search=None, hgt_limit=1):
                 if not continue_:
                     continue
                 hgt0, hgt1 = 'a' if grid[y][x] == 'S' else grid[y][x], 'z' if grid[yp][xp] == 'E' else grid[yp][xp]
-                continue_ &= ord(hgt1)-ord(hgt0) <= hgt_limit
-                if continue_ and (yp, xp) not in seen:
+                if ord(hgt1)-ord(hgt0) <= hgt_limit and (yp, xp) not in seen:
                     seen.add((yp, xp))
                     next_search.append((yp, xp))
         to_search = next_search
-
     return None, None, None
+
+
+def parse_day_13_input():
+    with open(r'inputs/Day_13.txt') as infile:
+        data = infile.read().split('\n\n')
+    for pair in data:
+        p0, p1, *_ = pair.split('\n')
+        # print(f'\tp0={p0} p1={p1}')
+        yield _parse_line(p0), _parse_line(p1)
+
+
+def _parse_line(line):
+    stack, index, temp = [[]], 0, ''
+    while index < len(line):
+        c = line[index]
+        if c == ',' and temp:
+            stack[-1].append(int(temp))
+            temp = ''
+        elif c == '[':
+            stack.append([])
+        elif c == ']':
+            if temp:
+                stack[-1].append(int(temp))
+                temp = ''
+            stack[-2].append(stack[-1])
+            stack.pop()
+        elif not c == ',':
+            temp += c
+        index += 1
+    return stack.pop().pop()
+
+
+def is_valid_packet(packet1, packet2):
+    for i, v in enumerate(packet1):
+        if len(packet2) == i:
+            return False
+        if v == packet2[i]:
+            continue
+        if isinstance(v, int) and isinstance(packet2[i], int):
+            return v < packet2[i]
+        elif isinstance(v, list) and isinstance(packet2[i], list):
+            return is_valid_packet(v, packet2[i])
+        elif isinstance(v, list):
+            return is_valid_packet(v, [packet2[i]])
+        else:
+            return is_valid_packet([v], packet2[i])
+    return True

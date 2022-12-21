@@ -10,7 +10,8 @@ from classes import FileSystemObject, ScenicScore, Monkey
 from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
                    update_scenic_score, get_day_9_sign_and_index,
-                   move_rope, process_monkeys, bfs)
+                   move_rope, process_monkeys, bfs,
+                   parse_day_13_input, is_valid_packet)
 
 
 def day_1(part='a'):
@@ -38,7 +39,7 @@ def day_2a(data):
                 ('B', 'X'): 0, ('B', 'Y'): 3, ('B', 'Z'): 6,
                 ('C', 'X'): 6, ('C', 'Y'): 0, ('C', 'Z'): 3}
 
-    return sum(mps[m2]+outcomes[(m1, m2)] for m1, m2 in games)
+    return sum(mps[m2] + outcomes[(m1, m2)] for m1, m2 in games)
 
 
 def day_2b(data):
@@ -50,7 +51,7 @@ def day_2b(data):
                 ('B', 'X'): 'X', ('B', 'Y'): 'Y', ('B', 'Z'): 'Z',
                 ('C', 'X'): 'Y', ('C', 'Y'): 'Z', ('C', 'Z'): 'X'}
 
-    return sum(points[j]+mps[outcomes[(i, j)]] for i, j in games)
+    return sum(points[j] + mps[outcomes[(i, j)]] for i, j in games)
 
 
 def day_3(part='a'):
@@ -58,10 +59,10 @@ def day_3(part='a'):
 
 
 def day_3a():
-    priorities = dict(zip(ascii_lowercase+ascii_uppercase, range(1, 53)))
+    priorities = dict(zip(ascii_lowercase + ascii_uppercase, range(1, 53)))
     with open('inputs/Day_3.txt') as infile:
         data = infile.readlines()
-    return sum(sum(priorities[i] for i in set(e[:len(e)//2]).intersection(set(e[(len(e)//2):]))) for e in data)
+    return sum(sum(priorities[i] for i in set(e[:len(e) // 2]).intersection(set(e[(len(e) // 2):]))) for e in data)
 
 
 def day_3b():
@@ -70,9 +71,9 @@ def day_3b():
         data = infile.read().split('\n')
 
     sum_ = 0
-    for i in range(0, len(data)-1, 3):
+    for i in range(0, len(data) - 1, 3):
         set_ = set(data[i])
-        for j in data[i+1:i+3]:
+        for j in data[i + 1:i + 3]:
             set_ = set_.intersection(j)
         sum_ += priorities[set_.pop()]
     return sum_
@@ -101,9 +102,9 @@ def day_4b(data):
         e1, e2 = entry.split(',')
         e1, e2 = e1.split('-'), e2.split('-')
         start1, stop1 = int(e1[0]), int(e1[1])
-        s1 = set(range(start1, stop1+1))
+        s1 = set(range(start1, stop1 + 1))
         start2, stop2 = int(e2[0]), int(e2[1])
-        s2 = set(range(start2, stop2+1))
+        s2 = set(range(start2, stop2 + 1))
 
         if s1.intersection(s2):
             count_ += 1
@@ -115,7 +116,7 @@ def day_5(part='a'):
 
     def move(command):
         num, src, dest = re.findall(r'\d+', command)
-        num, src, dest = int(num), int(src)-1, int(dest)-1
+        num, src, dest = int(num), int(src) - 1, int(dest) - 1
         reverse = -1 if part.lower() == 'a' else 1
         stacks[dest].extend(stacks[src][-num:][::reverse])
         del stacks[src][-num:]
@@ -132,8 +133,8 @@ def day_6(part='a'):
     offset = 4 if part.lower() == 'a' else 14
 
     for i, v in enumerate(data):
-        if len(set(data[i:i+offset])) == offset:
-            return i+offset
+        if len(set(data[i:i + offset])) == offset:
+            return i + offset
 
 
 def day_7(part='a'):
@@ -206,7 +207,7 @@ def day_10a(data):
 def day_10b(data):
     cycle, x, screen = 0, 1, []
     for line in data:
-        pixel = '#' if x-1 <= cycle <= x+1 else '.'
+        pixel = '#' if x - 1 <= cycle <= x + 1 else '.'
         screen.append(pixel)
         if len(screen) == 40:
             print(''.join(screen))
@@ -251,6 +252,14 @@ def day_12(part='a'):
     return count
 
 
+def day_13():
+    data, count = parse_day_13_input(), 0
+    for i, (x, y) in enumerate(data):
+        if is_valid_packet(x, y):
+            count += (i + 1)
+    return count
+
+
 if __name__ == '__main__':
     DELIMITER = '\n===============\n'
 
@@ -291,4 +300,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_12A={day_12()}')
     print(f'DAY_12B={day_12(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_13A={day_13()}')
+    # print(f'DAY_13B={day_13(part="b")}')
     print(DELIMITER)

@@ -1,6 +1,6 @@
 from collections import defaultdict
-import re
 from operator import add, sub, mul
+import re
 
 
 from numpy import prod
@@ -102,4 +102,3 @@ class Monkey:
         div = int(re.findall(r'\d+', data[2])[0])
         true_m, false_m = int(data[-2].split(' ')[-1]), int(data[-1].split(' ')[-1])
         return cls(items, lam, div, true_m, false_m)
-
