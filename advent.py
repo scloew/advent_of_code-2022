@@ -12,7 +12,8 @@ from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
                    update_scenic_score, get_day_9_sign_and_index,
                    move_rope, process_monkeys, bfs,
-                   parse_day_13_input, is_valid_packet, parse_day_14_input, move_sand)
+                   parse_day_13_input, is_valid_packet, parse_day_14_input,
+                   move_sand, move_sand_part_b)
 
 
 def day_1(part='a'):
@@ -278,13 +279,27 @@ def day_13b(data):
     return (adjusted_data.index(divider1) + 1) * (adjusted_data.index(divider2) + 1)
 
 
-def day_14():
+def day_14(part='a'):
     barriers = parse_day_14_input()
-    y_vals = tuple(i[1] for i in barriers)
-    x_bounds, y_max, count = range(min(barriers)[0], max(barriers)[0] + 1), max(y_vals), 0
+    y_max = max(i[1] for i in barriers)
+    return day_14a(barriers, y_max) if part.lower() == 'a' else day_14b(barriers, y_max)
+
+
+def day_14a(barriers, y_max):
+    x_bounds, count = range(min(barriers)[0], max(barriers)[0] + 1), 0
     while move_sand(barriers, x_bounds, y_max):
         count += 1
     return count
+
+
+def day_14b(barriers, y_max):
+    count, end_points = 0, {(500, 1), (499, 1), (501, 1)}
+    y_max += 2
+    while not barriers.issuperset(end_points):
+        move_sand_part_b(barriers, y_max)
+        barriers.issuperset(end_points)
+        count += 1
+    return count + 1
 
 
 if __name__ == '__main__':
@@ -332,5 +347,5 @@ if __name__ == '__main__':
     print(f'DAY_13B={day_13(part="b")}')
     print(DELIMITER)
     print(f'DAY_14A={day_14()}')
-    # print(f'DAY_14B={day_14(part="b")}')
+    print(f'DAY_14B={day_14(part="b")}')
     print(DELIMITER)

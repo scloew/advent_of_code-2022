@@ -218,3 +218,21 @@ def move_sand(barriers, x_bounds, y_max):
                 break
     barriers.add((x, y))
     return True
+
+
+def move_sand_part_b(barriers, y_max):
+    incs, x, y, moved = ((0, 1), (-1, 1), (1, 1)), 500, 0, True
+    while moved:
+        moved = False
+        for xi, yi in incs:
+            if (x + xi, y + yi) in barriers:
+                continue
+            elif y + yi == y_max - 1:
+                barriers.add((x+xi, y+yi))
+                return
+            else:
+                x += xi
+                y += yi
+                moved = True
+                break
+    barriers.add((x, y))
