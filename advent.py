@@ -12,8 +12,7 @@ from utils import (fetch_input, get_day5_data,
                    rotate_grid, check_tree_visibility,
                    update_scenic_score, get_day_9_sign_and_index,
                    move_rope, process_monkeys, bfs,
-                   parse_day_13_input, is_valid_packet,
-                   is_valid_packet2)
+                   parse_day_13_input, is_valid_packet, parse_day_14_input, move_sand)
 
 
 def day_1(part='a'):
@@ -269,15 +268,23 @@ def day_13a(data):
 
 def day_13b(data):
     divider1, divider2 = [[2]], [[6]]
-    new_data = []
-    for i in data:
-        x, y = i
-        new_data.append(x)
-        new_data.append(y)
-    new_data.append(divider1)
-    new_data.append(divider2)
-    newer_data = sorted(new_data, key=functools.cmp_to_key(lambda x, y: -1 if is_valid_packet(x, y) else 1))
-    return (newer_data.index(divider1) + 1) * (newer_data.index(divider2) + 1)
+    adjusted_data = []
+    for x, y in data:
+        adjusted_data.append(x)
+        adjusted_data.append(y)
+    adjusted_data.append(divider1)
+    adjusted_data.append(divider2)
+    adjusted_data.sort(key=functools.cmp_to_key(lambda p1, p2: -1 if is_valid_packet(p1, p2) else 1))
+    return (adjusted_data.index(divider1) + 1) * (adjusted_data.index(divider2) + 1)
+
+
+def day_14():
+    barriers = parse_day_14_input()
+    y_vals = tuple(i[1] for i in barriers)
+    x_bounds, y_max, count = range(min(barriers)[0], max(barriers)[0] + 1), max(y_vals), 0
+    while move_sand(barriers, x_bounds, y_max):
+        count += 1
+    return count
 
 
 if __name__ == '__main__':
@@ -323,4 +330,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_13A={day_13()}')
     print(f'DAY_13B={day_13(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_14A={day_14()}')
+    # print(f'DAY_14B={day_14(part="b")}')
     print(DELIMITER)
