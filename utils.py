@@ -1,4 +1,6 @@
-from itertools import chain
+import re
+
+from classes import SensorBeacon
 
 
 def fetch_input(day, delim='\n'):
@@ -236,3 +238,14 @@ def move_sand_part_b(barriers, y_max):
                 moved = True
                 break
     barriers.add((x, y))
+
+
+def parse_day_15_input():
+    data = fetch_input(15)
+    return [_parse_day_15_line(line) for line in data]
+
+
+def _parse_day_15_line(line):
+    regex = r'-?\d+'
+    return SensorBeacon(*[int(i) for i in re.findall(regex, line)])
+

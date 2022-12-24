@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from operator import add, sub, mul
 import re
 
@@ -102,3 +102,6 @@ class Monkey:
         div = int(re.findall(r'\d+', data[2])[0])
         true_m, false_m = int(data[-2].split(' ')[-1]), int(data[-1].split(' ')[-1])
         return cls(items, lam, div, true_m, false_m)
+
+
+SensorBeacon = namedtuple('SensorBeacon', ['x', 'y', 'xb', 'yb'])

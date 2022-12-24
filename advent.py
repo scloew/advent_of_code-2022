@@ -13,7 +13,7 @@ from utils import (fetch_input, get_day5_data,
                    update_scenic_score, get_day_9_sign_and_index,
                    move_rope, process_monkeys, bfs,
                    parse_day_13_input, is_valid_packet, parse_day_14_input,
-                   move_sand, move_sand_part_b)
+                   move_sand, move_sand_part_b, parse_day_15_input)
 
 
 def day_1(part='a'):
@@ -302,6 +302,18 @@ def day_14b(barriers, y_max):
     return count + 1
 
 
+def day_15(y_index=2_000_000):
+    sensor_beacons = parse_day_15_input()
+    not_beacons = set()
+    for i, v in enumerate(sensor_beacons):
+        y_distance = abs(v.y - y_index)
+        x_distance = (abs(v.x - v.xb) + abs(v.y - v.yb)) - y_distance
+        set_ = {j for j in range(v.x, v.x + x_distance + 1)}
+        set_ = set_.union({j for j in range(v.x, v.x - x_distance - 1, -1)})
+        not_beacons = not_beacons.union(set_)
+    return len(not_beacons) - 1
+
+
 if __name__ == '__main__':
     DELIMITER = '\n===============\n'
 
@@ -348,4 +360,7 @@ if __name__ == '__main__':
     print(DELIMITER)
     print(f'DAY_14A={day_14()}')
     print(f'DAY_14B={day_14(part="b")}')
+    print(DELIMITER)
+    print(f'15={day_15()}')
+    # print(f'DAY_15B={day_15(part="b")}')
     print(DELIMITER)
