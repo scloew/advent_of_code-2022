@@ -209,7 +209,7 @@ def day_10a(data):
 def day_10b(data):
     cycle, x, screen = 0, 1, []
     for line in data:
-        pixel = '#' if x - 1 <= cycle <= x + 1 else '.'
+        pixel = '#' if x - 1 <= cycle <= x + 1 else ' '
         screen.append(pixel)
         if len(screen) == 40:
             print(''.join(screen))
@@ -217,7 +217,7 @@ def day_10b(data):
         cycle += 1
         cycle %= 40
         if not line == 'noop':
-            pixel = '#' if x - 1 <= cycle <= x + 1 else '.'
+            pixel = '#' if x - 1 <= cycle <= x + 1 else ' '
             screen.append(pixel)
             if len(screen) == 40:
                 print(''.join(screen))
@@ -293,13 +293,12 @@ def day_14a(barriers, y_max):
 
 
 def day_14b(barriers, y_max):
-    count, end_points = 0, {(500, 1), (499, 1), (501, 1)}
+    count, end_point = 0, {(500, 0)}
     y_max += 2
-    while not barriers.issuperset(end_points):
+    while not barriers.issuperset(end_point):
         move_sand_part_b(barriers, y_max)
-        barriers.issuperset(end_points)
         count += 1
-    return count + 1
+    return count
 
 
 def day_15(y_index=2_000_000):
@@ -312,6 +311,10 @@ def day_15(y_index=2_000_000):
         set_ = set_.union({j for j in range(v.x, v.x - x_distance - 1, -1)})
         not_beacons = not_beacons.union(set_)
     return len(not_beacons) - 1
+
+
+def day_18():
+    return NotImplemented
 
 
 if __name__ == '__main__':
@@ -361,6 +364,9 @@ if __name__ == '__main__':
     print(f'DAY_14A={day_14()}')
     print(f'DAY_14B={day_14(part="b")}')
     print(DELIMITER)
-    print(f'15={day_15()}')
+    print(f'DAY_15A={day_15()}')
     # print(f'DAY_15B={day_15(part="b")}')
+    print(DELIMITER)
+    print(f'DAY_18A={day_18()}')
+    # print(f'DAY_18B={day_18(part="b")}')
     print(DELIMITER)
