@@ -314,7 +314,10 @@ def day_15(y_index=2_000_000):
 
 
 def day_18():
-    return NotImplemented
+    droplets = {tuple(int(i) for i in line.split(',')) for line in fetch_input(18)}
+    incs = ((1, 0, 0), (-1, 0, 0), (0, 1, 0),
+            (0, -1, 0), (0, 0, 1), (0, 0, -1))
+    return sum(1 for x, y, z in droplets for xi, yi, zi in incs if (x+xi, y+yi, z+zi) not in droplets)
 
 
 if __name__ == '__main__':
