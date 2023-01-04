@@ -13,12 +13,13 @@ from utils import (fetch_input, get_day5_data,
                    update_scenic_score, get_day_9_sign_and_index,
                    move_rope, process_monkeys, bfs,
                    parse_day_13_input, is_valid_packet, parse_day_14_input,
-                   move_sand, move_sand_part_b, parse_day_15_input)
+                   move_sand, move_sand_part_b, parse_day_15_input,
+                   find_tuning_frequency)
 
 
 def day_1(part='a'):
     """
-    :param part: for polymorphism; 'A' for part A 'B' for B
+    :param part: for polymorphism; 'a' for part A 'B' for B
     :return:
     """
     data = fetch_input(1, '\n\n')
@@ -301,8 +302,12 @@ def day_14b(barriers, y_max):
     return count
 
 
-def day_15(y_index=2_000_000):
+def day_15(part='a'):
     sensor_beacons = parse_day_15_input()
+    return day_15a(sensor_beacons) if part.lower() == 'a' else day_15b(sensor_beacons)
+
+
+def day_15a(sensor_beacons, y_index=2_000_000):
     not_beacons = set()
     for i, v in enumerate(sensor_beacons):
         y_distance = abs(v.y - y_index)
@@ -313,11 +318,24 @@ def day_15(y_index=2_000_000):
     return len(not_beacons) - 1
 
 
-def day_18():
+# @TODO: 6408275739075 is too low, 14514912113719 is too high; 13622251246513
+def day_15b(sensor_beacons):
+    return find_tuning_frequency(sensor_beacons)
+
+
+def day_18(part='a'):
     droplets = {tuple(int(i) for i in line.split(',')) for line in fetch_input(18)}
     incs = ((1, 0, 0), (-1, 0, 0), (0, 1, 0),
             (0, -1, 0), (0, 0, 1), (0, 0, -1))
+    return day_18a(droplets, incs) if part.lower() == 'a' else day_18b(droplets, incs)
+
+
+def day_18a(droplets, incs):
     return sum(1 for x, y, z in droplets for xi, yi, zi in incs if (x+xi, y+yi, z+zi) not in droplets)
+
+
+def day_18b(droplets, incs):
+    return NotImplemented
 
 
 if __name__ == '__main__':
@@ -368,8 +386,8 @@ if __name__ == '__main__':
     print(f'DAY_14B={day_14(part="b")}')
     print(DELIMITER)
     print(f'DAY_15A={day_15()}')
-    # print(f'DAY_15B={day_15(part="b")}')
+    print(f'DAY_15B={day_15(part="b")}')
     print(DELIMITER)
     print(f'DAY_18A={day_18()}')
-    # print(f'DAY_18B={day_18(part="b")}')
+    print(f'DAY_18B={day_18(part="b")}')
     print(DELIMITER)

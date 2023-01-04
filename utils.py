@@ -1,3 +1,4 @@
+from collections import defaultdict
 import re
 
 from classes import SensorBeacon
@@ -249,3 +250,69 @@ def _parse_day_15_line(line):
     regex = r'-?\d+'
     return SensorBeacon(*[int(i) for i in re.findall(regex, line)])
 
+
+def not_in_range(sensors, x, y):
+    for s in sensors:
+        if s.in_range(x, y):
+            return False
+    return True
+
+#  @TODO: refactor find_tuning_frequency to be cleaner
+# def find_tuning_frequency(sensors, search_area=4_000_000):
+#     bounds = range(search_area + 1)
+#     lines = defaultdict(list)
+#     for s in sensors:
+#         top_up = (True, s.y - s.range - 1 - s.x)
+#         top_down = (False, s.y - s.range - 1 + s.x)
+#         bottom_up = (True, s.y + s.range + 1 - s.x)
+#         bottom_down = (False, s.y + s.range + 1 + s.x)
+#         for bool_, line in (top_up, top_down, bottom_up, bottom_down):
+#             lines[bool_].append(line)
+#
+#     points = []
+#     for rising in lines[True]:
+#         for descending in lines[False]:
+#             x = (rising - descending) // 2
+#             y = x + descending
+#             points.append((x, y))
+#
+#     for x, y in points:
+#         if x in bounds and y in bounds and not_in_range(sensors, x, y):
+#             print('here')
+#             return x * search_area + y
+#     print('not returning nothing')
+
+def find_tuning_frequency(sensors, search_area=4_000_000):
+    lines = defaultdict(int)
+    for sensor in sensors:
+        top_up = (True, sensor.y - sensor.range - 1 - sensor.x)
+        top_down = (False, sensor.y - sensor.range - 1 + sensor.x)
+        bottom_up = (True, sensor.y + sensor.range + 1 - sensor.x)
+        bottom_down = (False, sensor.y + sensor.range + 1 + sensor.x)
+
+        for line in (top_up, top_down, bottom_up, bottom_down):
+            lines[line] += 1
+
+    rising_lines, descending_lines = [], []
+
+    for line, _ in lines.items():
+        if line[0]:
+            descending_lines.append(line[1])
+        else:
+            rising_lines.append(line[1])
+
+    points = []
+
+    for rising_q in rising_lines:
+        for descending_q in descending_lines:
+            x = (rising_q - descending_q) // 2
+            y = x + descending_q
+            points.append((x, y))
+
+    for x, y in points:
+        if (
+            0 <= y <= search_area
+            and 0 <= x <= search_area
+            and not_in_range(sensors, x, y)
+        ):
+            return x * 4_000_000 + y

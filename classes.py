@@ -1,9 +1,7 @@
 from collections import defaultdict, namedtuple
 from operator import add, sub, mul
+from math import prod
 import re
-
-
-from numpy import prod
 
 
 class FileSystemObject:
@@ -104,4 +102,15 @@ class Monkey:
         return cls(items, lam, div, true_m, false_m)
 
 
-SensorBeacon = namedtuple('SensorBeacon', ['x', 'y', 'xb', 'yb'])
+class SensorBeacon:
+
+    @classmethod
+    def manhattan_distance(cls, x, y, xi, yi):
+        return abs(x - xi) + abs(y - yi)
+
+    def __init__(self, x, y, xb, yb):
+        self.x, self.y, self.xb, self.yb = x, y, xb, yb
+        self.range = SensorBeacon.manhattan_distance(x, y, xb, yb)
+
+    def in_range(self, x, y):
+        return self.range >= SensorBeacon.manhattan_distance(self.x, self.y, x, y)
